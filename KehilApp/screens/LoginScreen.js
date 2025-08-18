@@ -7,60 +7,34 @@ export default function LoginScreen() {
   const [form, setForm] = useState({});
   const navigation = useNavigation();
 
-  const handleChange = (field, value) => {
-    setForm({ ...form, [field]: value });
-  };
+const handleLogin = async () => {
+  const res = await fetch("http://localhost:3001/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: form.login, password: form.password })
+  });
+  const data = await res.json();
+  if (data.success) {
+    navigation.navigate("Main", { user: data.user });
+  } else {
+    alert("Credenciales incorrectas");
+  }
+};
 
-  const FormInput = ({ placeholder, secure, field }) => (
-    <TextInput
-      placeholder={placeholder}
-      secureTextEntry={secure}
-      style={styles.input}
-      value={form[field] || ''}
-      onChangeText={(text) => handleChange(field, text)}
-    />
-  );
-
-  const handleLogin = () => {
-    navigation.navigate('Main');
-  };
-
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>KehilApp</Text>
-      <Text style={styles.subtitle}>Tu conexión con el mundo judío</Text>
-
-      {view === 'inicio' && (
-        <>
-          <Text style={styles.sectionTitle}>¿Cómo querés ingresar?</Text>
-          <Button title="🔐 Iniciar Sesión" onPress={() => setView('login')} />
-          <Button title="📝 Registrarse" onPress={() => setView('registro')} />
-        </>
-      )}
-
-      {view === 'login' && (
-        <>
-          <Text style={styles.sectionTitle}>🔐 Iniciar Sesión</Text>
-          <FormInput placeholder="Email o Teléfono" field="login" />
-          <FormInput placeholder="Contraseña" secure field="password" />
-          <Button title="Ingresar" onPress={handleLogin} />
-          <Button title="⬅ Volver" onPress={() => setView('inicio')} />
-        </>
-      )}
-
-      {view === 'registro' && (
-        <>
-          <Text style={styles.sectionTitle}>🙋 Registro de Usuario</Text>
-          <FormInput placeholder="Nombre" field="nombre" />
-          <FormInput placeholder="Email" field="email" />
-          <FormInput placeholder="Teléfono" field="telefono" />
-          <FormInput placeholder="Contraseña" secure field="password" />
-          <Button title="Registrarse" onPress={handleLogin} />
-          <Button title="⬅ Volver" onPress={() => setView('inicio')} />
-        </>
-      )}
-    </ScrollView>
-  );
+const handleRegister = async () => {
+  const res = await fetch("http://localhost:3001/api/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(form)
+  });
+  const data = await res.json();
+  if (data.success) {
+    alert("Usuario registrado ✅");
+    setView("login");
+  } else {
+    alert("Error al registrar");
+  }
+};
 }
 
 const styles = StyleSheet.create({

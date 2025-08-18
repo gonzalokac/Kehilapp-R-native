@@ -1,6 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
+import UserScreen from "../screens/UserScreen";
+
 
 const Tab = createBottomTabNavigator();
 
@@ -31,6 +33,8 @@ export default function MainTabs() {
       <Tab.Screen name="Mapa" component={HomeScreen} />
       <Tab.Screen name="Calendario" component={HomeScreen} />
       <Tab.Screen name="Ayuda" component={HomeScreen} />
+      <Tab.Screen name="Usuario" component={UserScreen} 
+  initialParams={{ user: null }} />
     </Tab.Navigator>
   );
 }
