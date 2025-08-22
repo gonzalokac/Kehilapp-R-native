@@ -11,6 +11,11 @@ export default function HomeScreen({ route }) {
   // Obtener el usuario de los parámetros de la ruta
   const user = route?.params?.user || {};
 
+  // Log para debug - verificar que los datos lleguen
+  console.log('HomeScreen - Datos recibidos:', user);
+  console.log('HomeScreen - Verificado:', user?.verificado);
+  console.log('HomeScreen - EsEmpresa:', user?.esEmpresa);
+
   const proximaFestividad = 'Shavuot - 11 de junio';
   const restaurantes = ['Sabra Grill', 'Deli Kosher', 'Benei Pizza'];
   const eventos = ['Clase de Torá - Lunes', 'Taller de Janucá - Miércoles'];

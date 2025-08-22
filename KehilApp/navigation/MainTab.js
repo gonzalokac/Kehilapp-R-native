@@ -4,7 +4,10 @@ import HomeScreen from '../screens/HomeScreen';
 
 const Tab = createBottomTabNavigator();
 
-export default function MainTabs() {
+export default function MainTabs({ route }) {
+  // Obtener los parámetros de la ruta principal
+  const user = route?.params?.user || {};
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -37,6 +40,7 @@ export default function MainTabs() {
       <Tab.Screen 
         name="Home" 
         component={HomeScreen}
+        initialParams={{ user }}
         options={{
           title: 'Inicio',
         }}

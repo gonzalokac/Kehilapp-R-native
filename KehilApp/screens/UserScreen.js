@@ -7,6 +7,11 @@ export default function UserScreen({ route }) {
   const navigation = useNavigation();
   const { user } = route.params || {};
 
+  // Log para debug - verificar que los datos lleguen
+  console.log('UserScreen - Datos recibidos:', user);
+  console.log('UserScreen - Verificado:', user?.verificado);
+  console.log('UserScreen - EsEmpresa:', user?.esEmpresa);
+
   const handleLogout = () => {
     Alert.alert(
       "Cerrar Sesión",
@@ -53,13 +58,41 @@ export default function UserScreen({ route }) {
         <View style={styles.profileHeader}>
           <View style={styles.avatarContainer}>
             <Ionicons name="person-circle" size={80} color="#6200ee" />
+            {/* Badge de verificación */}
+            {user?.verificado && (
+              <View style={styles.verifiedBadge}>
+                <Ionicons name="checkmark-circle" size={24} color="#4caf50" />
+              </View>
+            )}
           </View>
           <Text style={styles.userName}>
-            {user?.nombre || 'Usuario'}
+            {user?.nombre || 'Usuario'} {user?.apellido || ''}
           </Text>
           <Text style={styles.userEmail}>
             {user?.email || 'usuario@ejemplo.com'}
           </Text>
+          
+          {/* Estado de verificación y empresa - Más visible */}
+          <View style={styles.statusContainer}>
+            {user?.verificado ? (
+              <View style={styles.verificationStatus}>
+                <Ionicons name="shield-checkmark" size={20} color="#4caf50" />
+                <Text style={styles.verificationText}>✅ Cuenta Verificada</Text>
+              </View>
+            ) : (
+              <View style={styles.notVerifiedStatus}>
+                <Ionicons name="shield-outline" size={20} color="#ff9800" />
+                <Text style={styles.notVerifiedText}>⚠️ Cuenta No Verificada</Text>
+              </View>
+            )}
+            
+            {user?.esEmpresa && (
+              <View style={styles.companyBadge}>
+                <Ionicons name="business" size={20} color="#2196f3" />
+                <Text style={styles.companyText}>🏢 Empresa</Text>
+              </View>
+            )}
+          </View>
         </View>
 
         {/* Información del usuario */}
@@ -99,6 +132,22 @@ export default function UserScreen({ route }) {
               </Text>
             </View>
           )}
+          
+          <View style={styles.infoRow}>
+            <Ionicons name="business-outline" size={20} color="#666" />
+            <Text style={styles.infoLabel}>Tipo de Cuenta:</Text>
+            <Text style={styles.infoValue}>
+              {user?.esEmpresa ? '🏢 Empresa' : '👤 Usuario Individual'}
+            </Text>
+          </View>
+          
+          <View style={styles.infoRow}>
+            <Ionicons name="shield-outline" size={20} color="#666" />
+            <Text style={styles.infoLabel}>Estado:</Text>
+            <Text style={styles.infoValue}>
+              {user?.verificado ? '✅ Verificado' : '⚠️ No Verificado'}
+            </Text>
+          </View>
         </View>
 
         {/* Acciones rápidas */}
@@ -170,16 +219,78 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     marginBottom: 15,
+    position: 'relative',
+  },
+  verifiedBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 2,
   },
   userName: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 5,
+    textAlign: 'center',
   },
   userEmail: {
     fontSize: 16,
     color: '#666',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  statusContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10,
+    marginBottom: 15,
+  },
+  verificationStatus: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#e8f5e8',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginRight: 10,
+  },
+  notVerifiedStatus: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff3cd',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginRight: 10,
+  },
+  verificationText: {
+    fontSize: 14,
+    color: '#2e7d32',
+    fontWeight: '600',
+    marginLeft: 6,
+  },
+  notVerifiedText: {
+    fontSize: 14,
+    color: '#ff9800',
+    fontWeight: '600',
+    marginLeft: 6,
+  },
+  companyBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#e3f2fd',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  companyText: {
+    fontSize: 14,
+    color: '#1565c0',
+    fontWeight: '600',
+    marginLeft: 6,
   },
   infoCard: {
     backgroundColor: '#fff',
