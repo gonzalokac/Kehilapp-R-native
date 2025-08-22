@@ -3,25 +3,14 @@ import { View, Text, TextInput, Button, StyleSheet, ScrollView, TouchableOpacity
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Configuración de la API según la plataforma
-const getApiUrl = () => {
-  if (Platform.OS === 'android') {
-    // Para emulador Android usar 10.0.2.2, para dispositivo físico usar IP de tu PC
-    return 'http://10.0.2.2:3001/api';
-  } else if (Platform.OS === 'ios') {
-    // Para simulador iOS usar localhost, para dispositivo físico usar IP de tu PC
-    return 'http://localhost:3001/api';
-  } else {
-    return 'http://localhost:3001/api';   // Web
-  }
-};
-
-const API_BASE_URL = getApiUrl();
+// Importar configuración de red que funciona
+import { getBestApiUrl, safeFetch, NETWORK_CONFIG } from '../config/workingNetwork';
 
 export default function LoginScreen() {
   const [view, setView] = useState('login');
   const [loading, setLoading] = useState(false);
   const [useServer, setUseServer] = useState(false);
+  const [apiUrl, setApiUrl] = useState(null);
   const [form, setForm] = useState({
     login: '',
     password: '',
@@ -40,14 +29,15 @@ export default function LoginScreen() {
 
   const checkServerConnection = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/health`);
-      if (response.ok) {
-        setUseServer(true);
-        console.log('✅ Servidor conectado');
-      }
+      // Obtener la mejor URL de API disponible
+      const bestUrl = await getBestApiUrl();
+      setApiUrl(bestUrl);
+      setUseServer(true);
+      console.log('✅ Servidor conectado a:', bestUrl);
     } catch (error) {
       setUseServer(false);
-      console.log('⚠️ Servidor no disponible, usando modo local');
+      setApiUrl(null);
+      console.log('⚠️ Servidor no disponible, usando modo local:', error.message);
       // No mostrar alertas de error al usuario
     }
   };
@@ -61,13 +51,10 @@ export default function LoginScreen() {
     setLoading(true);
     
     try {
-      if (useServer) {
-        // Login con servidor
-        const response = await fetch(`${API_BASE_URL}/login`, {
+      if (useServer && apiUrl) {
+        // Login con servidor usando safeFetch
+        const response = await safeFetch(`${apiUrl}/login`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           body: JSON.stringify({
             email: form.login,
             password: form.password
@@ -113,13 +100,10 @@ export default function LoginScreen() {
     setLoading(true);
     
     try {
-      if (useServer) {
-        // Registro con servidor
-        const response = await fetch(`${API_BASE_URL}/register`, {
+      if (useServer && apiUrl) {
+        // Registro con servidor usando safeFetch
+        const response = await safeFetch(`${apiUrl}/register`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           body: JSON.stringify({
             nombre: form.nombre,
             apellido: form.apellido,

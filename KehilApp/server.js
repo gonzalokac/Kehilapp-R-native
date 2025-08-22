@@ -259,9 +259,10 @@ app.use((error, req, res, next) => {
 });
 
 // Iniciar servidor
-app.listen(PORT, async () => {
+app.listen(PORT, '0.0.0.0', async () => {
     console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
     console.log(`📱 API disponible en http://localhost:${PORT}/api`);
+    console.log(`🌐 API disponible para emulador en http://10.0.2.2:${PORT}/api`);
     console.log(`💚 Estado del servidor: http://localhost:${PORT}/api/health`);
     
     // Probar conexión a base de datos
