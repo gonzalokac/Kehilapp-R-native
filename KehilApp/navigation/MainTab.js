@@ -1,6 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
+import CalendarioScreen from '../screens/CalendarioScreen';
+import MapaScreen from '../screens/MapaScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,6 +18,10 @@ export default function MainTabs({ route }) {
 
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Calendar') {
+            iconName = focused ? 'calendar' : 'calendar-outline';
+          } else if (route.name === 'Map') {
+            iconName = focused ? 'map' : 'map-outline';
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -43,6 +49,20 @@ export default function MainTabs({ route }) {
         initialParams={{ user }}
         options={{
           title: 'Inicio',
+        }}
+      />
+      <Tab.Screen 
+        name="Calendar" 
+        component={CalendarioScreen}
+        options={{
+          title: 'Calendario',
+        }}
+      />
+      <Tab.Screen 
+        name="Map" 
+        component={MapaScreen}
+        options={{
+          title: 'Mapa',
         }}
       />
     </Tab.Navigator>
